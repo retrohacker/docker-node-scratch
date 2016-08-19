@@ -1,0 +1,24 @@
+FROM debian:jessie
+
+RUN apt-get update \
+ && apt-get install -y --force-yes --no-install-recommends\
+      apt-transport-https \
+      ssh-client \
+      wget \
+ && rm -rf /var/lib/apt/lists/*;
+
+RUN wget --no-check-certificate 'https://deb.nodesource.com/node_4.x/pool/main/n/nodejs/nodejs_4.4.3-1nodesource1~jessie1_amd64.deb'
+
+RUN mkdir node
+
+RUN dpkg -x nodejs_*.deb node/
+
+RUN mkdir output
+
+RUN mv node/usr/bin/nodejs output
+
+RUN ldd output/nodejs | grep '=>' | awk '{print $3}' | xargs -L1 dirname | xargs -L1 -I{} mkdir -p output/{} \
+ && ldd output/nodejs | grep '=>' | awk '{print $3}' | xargs -I{} cp {} output{} \
+ && mkdir -p output/sbin \
+ && cp /sbin/ldconfig.real output/sbin/ldconfig \
+ && cp /lib/x86_64-linux-gnu/ld-2.19.so output/lib/x86_64-linux-gnu/ld-2.19.so
