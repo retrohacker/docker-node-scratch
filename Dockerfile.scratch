@@ -1,9 +1,5 @@
 FROM scratch
 
-COPY ./output/lib /lib
-COPY ./output/usr /usr
-COPY ./output/nodejs /nodejs
-COPY ./output/sbin /sbin
-COPY ./output/node-bootstrap /node-bootstrap
+COPY ./output/ /
 
 CMD ["/node-bootstrap"]
